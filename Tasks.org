@@ -1,0 +1,53 @@
+#+TITLE: Julia-Chase project
+#+AUTHOR: Edoardo Di Napoli
+#+DATE: 13-06-2019
+#+TODO: TODO | DONE
+#+TODO: CRITICAL ONGOING BRAINSTORMING INVESTIGATE | SOLVED NOTFEASIBLE 
+#+FILETAGS: :JuliaChASE:
+
+* Input and Outputs
+
+** Define interface for ChASE 
+How to distinguish between mandatory and optional variables/parameters
+
+** Define mandatory variables and their type: input and output
+
+** Define optional parameters and variables
+- General parameters
+- Filter parameters
+- Lanzcos parameter
+- Control variables (timers and counters)
+- Debugging variables (timers and counters)
+
+** Initial inline documentation
+- Description of Inputs and outputs variables
+- Description of usage
+- Examples of usage
+* Processing inputs and initializations
+** Section -- Include all Julia libraries required by the code
+On a separate header file to be included here and in each function file
+** Section -- Mandatory variables: processing and perform error checking
+** Section -- Optional inputs: processing and perform error checking
+** Section -- Optional variables and parameters: set defaults
+For the optional input that is not specified by the user
+** Section -- Control variables for optional output: initialize
+- Standard timers, one for each function
+- Counters for Mat-vec, while loop iterations, etc.
+** Section -- Debugging variables and counters: activation and initialization 
+- Monitoring the residuals for non-converged vectors
+- Monitoring the optimized degree 
+** Section -- Allocation of memory and initialization
+for mandatory and optional variables
+* Main functions
+** Function -- Lanczos
+Set up interface first
+** Function -- Filter
+Set up interface first
+** Function Rayleigh-Ritz
+Set up interface first
+** Residual checking, locking and deflation
+Set up interface
+** Degree optimization 
+Set up interface
+** Matrix loading (depenprs on the Matrix product
+** Writing results a a file.
