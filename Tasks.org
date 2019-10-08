@@ -9,15 +9,71 @@
 
 ** Define interface for ChASE 
 How to distinguish between mandatory and optional variables/parameters
+- There is one mandatory array variable (the matrix A) and two
+  optional array variables: the matrix of orthonormal vectors V and a
+  vector \lambda of real (doubles) number. Probably (but I am open to smarter
+  solutions) it would better to have only A (matrix) to be a
+  positional input variable.
+- A main function and the ChASE main should have mandatory input parameters
+  and optional input parameters
+- Mandatory parameters: These could be or not be positional and do not allow
+  for default values. The number of mandatory arguments could be
+  controlled with "Varargs". One has to careful that V \Lambda becomes
+  mandatory if one of the optional parameters change value (approx=true).
+- Optional parameters: these are all other parameters which if not
+  specified take default values. In order to avoid confusion with
+  method definition these should probably be named parameters. Also
+  check Parameters.jl package, it could have more clever ways to
+  handle optional parameters.
 
 ** Define mandatory variables and their type: input and output
-
+*** Input
+- N (size of the matrix), pos int,  > 500 [warning]
+- A, 2-D array, Complex (Real) double, sizeof(A)=(N,N) [error],
+  Hermitian (Symmetric) [error]
+- nev (number of requested eigenpairs), positive int, < 0.2*N
+  [warning], <0.5*N [error]
+- nex (extra eigenpairs), positive int, > max(15,0.1*N) [warning]
+- V, 2-D array complex doubles, it is mandatory if
+  approx=true, V^T*V=1 [error], sizeof(V)=(N,nev+nex) [error] 
+- \lambda, 1-D array of real doubles, it is mandatory if approx=true,
+  should be ordered, \lambda[1] < \lambda[nev+nex] [error],
+  sizeof(\Lambda) < nev+nex [error]
+*** Output
+- Y, 2-D array complex doubles, sizeof(Y)=(N,nev) [error]
+- \Lambda, 1-D array of real doubles
 ** Define optional parameters and variables
-- General parameters
-- Filter parameters
-- Lanzcos parameter
-- Control variables (timers and counters)
-- Debugging variables (timers and counters)
+- General parameters:
+  + approx, bool, default=0, if approx=1 then V and \lambda become mandatory
+  + tol, double, default=1e-10 in DP (1e-05 in SP), < 1e-15 in DP
+    (< 1e-07 in SP) [warning]
+  + maxIter, pos int, default=25, < 1000 [warning]
+- Filter parameters:
+  + deg, pos int, default=20 in DP (10 in SP), < degMax [warning]  
+  + optim, bool, default=false, if =true then deg < 12 in DP (deg < 7
+    in SP)
+  + degMax, pos int, default=36, > 50 [warning]
+  + degExtra, pos int, default=2, > 8 [warning]
+- Lanzcos parameter:
+  + k, pos int, default=25 in DP (=12 in SP), > 100 [warning]
+  + nvec, pos int, default=4, > 25 [warning]
+- Control variables (timers and counters, on by default, can be swtitched off)
+  + One timer for the whole eigensolver (excluding I/O)
+  + Separate timer for reading input and writing output
+  + One timer for each of the modules/functions (Lanczos, Filter, QR,
+    R-R, Residuals) of the solvers. Times have to be accumulated
+    across all the internal iterations of the while loop.
+  + One separate mat-vec counter for each of the
+    modules/functions. Counters have to be accumulated across all the
+    internal iterations of the while loop.
+  + Total number of while loop iterations
+- Debugging variables (counters, off by default, can be switched on)
+  + Printing of the residuals at the end of each of the while loop
+  + Printing of \mu_1, \mu_{nev+nex} and \mu_N at the end of each
+    while loop
+  + Printing of the vector of optimized degrees (only if optim=true)
+    for each while loop
+  + More to come...
 
 ** Initial inline documentation
 - Description of Inputs and outputs variables
@@ -49,5 +105,5 @@ Set up interface first
 Set up interface
 ** Degree optimization 
 Set up interface
-** Matrix loading (depenprs on the Matrix product
+** Matrix loading (depends on the Matrix product
 ** Writing results a a file.
